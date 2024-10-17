@@ -9,8 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Get some code from a GitHub repository
-                git branch: 'main', url: 'https://github.com/1182147/ODSOFT_2425_1182147_1190409'
+                checkout scm
             }
         }
 
