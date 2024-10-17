@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        // Install the Maven version configured as "MVN" and add it to the path.
+        // TODO - Remove this and use the Maven binary path
         maven 'MVN'
     }
 
