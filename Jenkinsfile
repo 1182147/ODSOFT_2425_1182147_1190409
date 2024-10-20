@@ -36,6 +36,30 @@ pipeline {
             }
         }
 
+        stage('Publish Coverage Report') {
+            steps {
+                script {
+                    def reportName = "Coverage Report - Build #${env.BUILD_NUMBER}"
+                    // This gives visibility within Jenkins as to the state of the Coverage Reports
+                    // and allows analyzing Coverage Trends
+                    jacoco(
+                        execPattern: 'target/*.exec',
+                        classPattern: 'target/classes',
+                        sourcePattern: 'src/main/java',
+                        exclusionPattern: 'src/test*'
+                    )
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: reportName
+                    ])
+                }
+            }
+        }
+
         stage('Package') {
             steps {
                 script {
@@ -46,6 +70,14 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
+            // We don't need to artifact JaCoCo reports as it is done automatically by the publishing above.
+            archiveArtifacts artifacts: 'target/surefire-reports/*.xml', fingerprint: true
         }
     }
 }
