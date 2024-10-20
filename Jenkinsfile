@@ -36,7 +36,7 @@ pipeline {
             }
         }
 
-        stage('Publish Coverage Report') {
+        stage('Record Coverage Report') {
             steps {
                 script {
                     def reportName = "Coverage Report - Build #${env.BUILD_NUMBER}"
@@ -60,6 +60,14 @@ pipeline {
             }
         }
 
+        stage('Record Test Report') {
+            steps {
+                script {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+
         stage('Package') {
             steps {
                 script {
@@ -70,14 +78,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            junit 'target/surefire-reports/*.xml'
-            // We don't need to artifact JaCoCo reports as it is done automatically by the publishing above.
-            archiveArtifacts artifacts: 'target/surefire-reports/*.xml', fingerprint: true
         }
     }
 }
