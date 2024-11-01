@@ -7,17 +7,39 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class DescriptionTest {
 
     @Test
+    void ensureDescriptionIsSet() {
+        final var description = new Description("Some description");
+        assertEquals("Some description", description.toString());
+    }
+
+    @Test
+    void ensureDescriptionIsChanged() {
+        final var description = new Description("Some description");
+        description.setDescription("Some other description");
+        assertEquals("Some other description", description.toString());
+    }
+
+    @Test
     void ensureDescriptionCanBeNull() {
+        final var description = new Description(null);
+        assertNull(description.toString());
         assertDoesNotThrow(() -> new Description(null));
     }
 
+    @Test
+    void ensureDescriptionCantBeBlank() {
+        final var description = new Description("   ");
+        assertNull(description.toString());
+        assertDoesNotThrow(() -> new Description("   "));
+    }
 
     /**
      * Text from <a href="https://www.lipsum.com/">Lorem Ipsum</a> generator.
      */
     @Test
     void ensureDescriptionMustNotBeOversize() {
-        assertThrows(IllegalArgumentException.class, () -> new Description("\n" +
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Description("\n" +
                 "\n" +
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam venenatis semper nisl, eget condimentum felis tempus vitae. Morbi tempus turpis a felis luctus, ut feugiat tortor mattis. Duis gravida nunc sed augue ultricies tempor. Phasellus ultrices in dolor id viverra. Sed vitae odio ut est vestibulum lacinia sed sed neque. Mauris commodo, leo in tincidunt porta, justo mi commodo arcu, non ultricies ipsum dolor a mauris. Pellentesque convallis vulputate nisl, vel commodo felis ornare nec. Aliquam tristique diam dignissim hendrerit auctor. Mauris nec dolor hendrerit, dignissim urna non, pharetra quam. Sed diam est, convallis nec efficitur eu, sollicitudin ac nibh. In orci leo, dapibus ut eleifend et, suscipit sit amet felis. Integer lectus quam, tristique posuere vulputate sed, tristique eget sem.\n" +
                 "\n" +
@@ -34,19 +56,8 @@ class DescriptionTest {
                 "Vestibulum quis mi at lorem laoreet bibendum eu porta magna. Etiam vitae metus a sapien sagittis dapibus et et ex. Vivamus sed vestibulum nibh. Etiam euismod odio massa, ac feugiat urna congue ac. Phasellus leo quam, lacinia at elementum vitae, viverra quis ligula. Quisque ultricies tellus nunc, id ultrices risus accumsan in. Vestibulum orci magna, mollis et vehicula non, bibendum et magna. Pellentesque ut nibh quis risus dignissim lacinia sed non elit. Morbi eleifend ipsum posuere velit sollicitudin, quis auctor urna ullamcorper. Praesent pellentesque non lacus eu scelerisque. Praesent quis eros sed orci tincidunt maximus. Quisque imperdiet interdum massa a luctus. Phasellus eget nisi leo.\n" +
                 "\n" +
                 "Nunc porta nisi eu dui maximus hendrerit eu quis est. Cras molestie lacus placerat, maximus libero hendrerit, eleifend nisi. Suspendisse potenti. Praesent nec mi ut turpis pharetra pharetra. Phasellus pharetra. "));
-    }
 
-    @Test
-    void ensureDescriptionIsSet() {
-        final var description = new Description("Some description");
-        assertEquals("Some description", description.toString());
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        assertEquals("Description has a maximum of 4096 characters", exception.getMessage());
     }
-
-    @Test
-    void ensureDescriptionIsChanged() {
-        final var description = new Description("Some description");
-        description.setDescription("Some other description");
-        assertEquals("Some other description", description.toString());
-    }
-
 }

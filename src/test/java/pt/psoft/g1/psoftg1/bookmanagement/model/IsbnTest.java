@@ -8,14 +8,17 @@ class IsbnTest {
 
     @Test
     void ensureIsbnMustNotBeNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Isbn(null));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Isbn(null));
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        assertEquals("Isbn cannot be null", exception.getMessage());
     }
 
     @Test
-    void ensureIsbnMustNotBeBlank() {
-        assertThrows(IllegalArgumentException.class, () -> new Isbn(""));
+    void ensureIsbnMustBeValid() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Isbn("8175257663"));
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        assertEquals("Invalid ISBN-13 format or check digit.", exception.getMessage());
     }
-
 
     /**
      * Text from <a href="https://www.lipsum.com/">Lorem Ipsum</a> generator.

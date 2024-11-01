@@ -2,19 +2,36 @@ package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class TitleTest {
 
     @Test
+    void ensureTitleIsSet() {
+        final var title = new Title("Some title");
+        assertEquals("Some title", title.toString());
+    }
+
+    @Test
+    void ensureTitleIsChanged() {
+        final var title = new Title("Some title");
+        title.setTitle("Some other title");
+        assertEquals("Some other title", title.toString());
+    }
+
+    @Test
     void ensureTitleMustNotBeNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Title(null));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Title(null));
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        assertEquals("Title cannot be null", exception.getMessage());
     }
 
     @Test
     void ensureTitleMustNotBeBlank() {
-        assertThrows(IllegalArgumentException.class, () -> new Title(""));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Title("   "));
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        assertEquals("Title cannot be blank", exception.getMessage());
     }
 
     @Test
@@ -29,13 +46,12 @@ class TitleTest {
         assertEquals("Some title", title.toString());
     }
 
-
     /**
      * Text from <a href="https://www.lipsum.com/">Lorem Ipsum</a> generator.
      */
     @Test
     void ensureTitleMustNotBeOversize() {
-        assertThrows(IllegalArgumentException.class, () -> new Title("\n" +
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Title("\n" +
                 "\n" +
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam venenatis semper nisl, eget condimentum felis tempus vitae. Morbi tempus turpis a felis luctus, ut feugiat tortor mattis. Duis gravida nunc sed augue ultricies tempor. Phasellus ultrices in dolor id viverra. Sed vitae odio ut est vestibulum lacinia sed sed neque. Mauris commodo, leo in tincidunt porta, justo mi commodo arcu, non ultricies ipsum dolor a mauris. Pellentesque convallis vulputate nisl, vel commodo felis ornare nec. Aliquam tristique diam dignissim hendrerit auctor. Mauris nec dolor hendrerit, dignissim urna non, pharetra quam. Sed diam est, convallis nec efficitur eu, sollicitudin ac nibh. In orci leo, dapibus ut eleifend et, suscipit sit amet felis. Integer lectus quam, tristique posuere vulputate sed, tristique eget sem.\n" +
                 "\n" +
@@ -52,19 +68,8 @@ class TitleTest {
                 "Vestibulum quis mi at lorem laoreet bibendum eu porta magna. Etiam vitae metus a sapien sagittis dapibus et et ex. Vivamus sed vestibulum nibh. Etiam euismod odio massa, ac feugiat urna congue ac. Phasellus leo quam, lacinia at elementum vitae, viverra quis ligula. Quisque ultricies tellus nunc, id ultrices risus accumsan in. Vestibulum orci magna, mollis et vehicula non, bibendum et magna. Pellentesque ut nibh quis risus dignissim lacinia sed non elit. Morbi eleifend ipsum posuere velit sollicitudin, quis auctor urna ullamcorper. Praesent pellentesque non lacus eu scelerisque. Praesent quis eros sed orci tincidunt maximus. Quisque imperdiet interdum massa a luctus. Phasellus eget nisi leo.\n" +
                 "\n" +
                 "Nunc porta nisi eu dui maximus hendrerit eu quis est. Cras molestie lacus placerat, maximus libero hendrerit, eleifend nisi. Suspendisse potenti. Praesent nec mi ut turpis pharetra pharetra. Phasellus pharetra. "));
-    }
 
-    @Test
-    void ensureTitleIsSet() {
-        final var title = new Title("Some title");
-        assertEquals("Some title", title.toString());
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        assertEquals("Title has a maximum of 128 characters", exception.getMessage());
     }
-
-    @Test
-    void ensureTitleIsChanged() {
-        final var title = new Title("Some title");
-        title.setTitle("Some other title");
-        assertEquals("Some other title", title.toString());
-    }
-
 }
