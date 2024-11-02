@@ -113,6 +113,20 @@
 			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.pitest</groupId>
+			<artifactId>pitest-parent</artifactId>
+			<version>1.17.0</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.pitest</groupId>
+			<artifactId>pitest-junit5-plugin</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -168,6 +182,20 @@
 							<version>0.2.0</version>
 						</path>
 					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.17.0</version>
+				<configuration>
+					<targetClasses>
+						<param>pt.psoft.g1.psoftg1.*</param>
+					</targetClasses>
+					<targetTests>
+						<param>pt.psoft.g1.psoftg1.**</param>
+					</targetTests>
 				</configuration>
 			</plugin>
 		</plugins>

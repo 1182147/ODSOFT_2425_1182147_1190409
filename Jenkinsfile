@@ -36,6 +36,18 @@ pipeline {
             }
         }
 
+        stage('Mutation Test') {
+            steps {
+                script {
+                    if(isUnix()) {
+                        sh "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+                    } else {
+                        bat "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+                    }
+                }
+            }
+        }
+
         stage('Record Coverage Report') {
             steps {
                 script {
