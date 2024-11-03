@@ -38,11 +38,11 @@ pipeline {
 
         // Both Unit Tests and Mutation Tests can and should be ran in parallel
         // as there is no intrinsic benefit in doing them separately.
-        stage('Tests w/ Report Recording') {
+        stage('Unit + Mutation Testing w/ Report Recording') {
             parallel {
                 stage('Unit Tests') {
                     stages {
-                        stage('Run') {
+                        stage('Run Unit Tests') {
                             steps {
                                 script {
                                     if(isUnix()) {
@@ -53,7 +53,7 @@ pipeline {
                                 }
                             }
                         }
-                        stage('Record Reports') {
+                        stage('Record Unit Test Reports') {
                             steps {
                                 script {
                                     def reportName = "Unit Test Coverage Report - Build #${env.BUILD_NUMBER}"
@@ -81,7 +81,7 @@ pipeline {
                 }
                 stage('Mutation Tests') {
                     stages {
-                        stage('Run') {
+                        stage('Run Mutation Tests') {
                             steps {
                                 script {
                                     if(isUnix()) {
@@ -92,7 +92,7 @@ pipeline {
                                 }
                             }
                         }
-                        stage('Record Reports') {
+                        stage('Record Mutation Test Reports') {
                             steps {
                                 script {
                                     def reportName = "Mutation Test Coverage Report - Build #${env.BUILD_NUMBER}"
