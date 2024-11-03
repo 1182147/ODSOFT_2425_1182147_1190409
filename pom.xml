@@ -207,7 +207,6 @@
 				<version>3.6.0</version>
 				<configuration>
 					<configLocation>config/checkstyle/checkstyle.xml</configLocation>
-					<encoding>UTF-8</encoding>
 					<consoleOutput>true</consoleOutput>
 					<failsOnError>false</failsOnError>
 					<linkXRef>false</linkXRef>

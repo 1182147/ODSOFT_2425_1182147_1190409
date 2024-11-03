@@ -118,5 +118,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    if(isUnix()) {
+                        sh "JENKINS_NODE_COOKIE=dontKillMe java -jar ./target/psoft-g1-0.0.1-SNAPSHOT.jar --server.port=2228 > output.log 2>&1 &"
+                    } else {
+                        // To be supported...
+                    }
+                }
+            }
+        }
     }
 }
