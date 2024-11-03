@@ -142,7 +142,7 @@ pipeline {
         // the built binary.
         stage('Archive JAR Artifact') {
              steps {
-                  archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
+                  archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
              }
         }
 
