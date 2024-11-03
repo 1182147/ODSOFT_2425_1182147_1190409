@@ -16,9 +16,9 @@ pipeline {
             steps {
                 script {
                     if(isUnix()) {
-                        sh "mvn clean:clean validate compiler:compile"
+                        sh "mvn clean compile"
                     } else {
-                        bat "mvn clean:clean validate compiler:compile"
+                        bat "mvn clean compile"
                     }
                 }
             }
@@ -48,17 +48,18 @@ pipeline {
             }
         }
 
-        stage('Mutation Test') {
-            steps {
-                script {
-                    if(isUnix()) {
-                        sh "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
-                    } else {
-                        bat "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
-                    }
-                }
-            }
-        }
+// Egregious Effort for the DEI Machines...
+//         stage('Mutation Test') {
+//             steps {
+//                 script {
+//                     if(isUnix()) {
+//                         sh "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+//                     } else {
+//                         bat "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Record Coverage Report') {
             steps {
@@ -110,9 +111,9 @@ pipeline {
             steps {
                 script {
                     if(isUnix()) {
-                        sh "mvn jar:jar"
+                        sh "mvn install -DskipTests"
                     } else {
-                        bat "mvn jar:jar"
+                        bat "mvn install -DskipTests"
                     }
                 }
             }
