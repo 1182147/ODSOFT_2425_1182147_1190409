@@ -207,6 +207,8 @@
 					<targetTests>
 						<param>**.model.**</param>
 					</targetTests>
+					<!-- Optimizations based on: https://blog.frankel.ch/faster-mutation-testing -->
+					<threads>4</threads>
 				</configuration>
 			</plugin>
 
