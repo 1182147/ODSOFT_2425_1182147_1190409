@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        stage('Static Analysis') {
+        stage('Static Code Analysis') {
             steps {
                 script {
                     if(isUnix()) {
@@ -36,59 +36,78 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                script {
-                    if(isUnix()) {
-                        sh "mvn test"
-                    } else {
-                        bat "mvn test"
+        // Both Unit Tests and Mutation Tests can and should be ran in parallel
+        // as there is no intrinsic benefit in doing them separately.
+        stage('Tests w/ Report Recording') {
+            parallel {
+                stage('Unit Tests') {
+                    stages {
+                        stage('Run') {
+                            steps {
+                                script {
+                                    if(isUnix()) {
+                                        sh "mvn test"
+                                    } else {
+                                        bat "mvn test"
+                                    }
+                                }
+                            }
+                        }
+                        stage('Record Reports') {
+                            steps {
+                                script {
+                                    def reportName = "Unit Test Coverage Report - Build #${env.BUILD_NUMBER}"
+                                    // This gives visibility within Jenkins as to the state of the Coverage Reports
+                                    // and allows analyzing Coverage Trends
+                                    jacoco(
+                                        execPattern: 'target/*.exec',
+                                        classPattern: 'target/classes',
+                                        sourcePattern: 'src/main/java',
+                                        exclusionPattern: 'src/test*'
+                                    )
+                                    publishHTML(target: [
+                                        allowMissing: false,
+                                        alwaysLinkToLastBuild: false,
+                                        keepAll: true,
+                                        reportDir: 'target/site/jacoco',
+                                        reportFiles: 'index.html',
+                                        reportName: reportName
+                                    ])
+                                    junit 'target/surefire-reports/*.xml'
+                                }
+                            }
+                        }
                     }
                 }
-            }
-        }
-
-// Egregious Effort for the DEI Machines...
-//         stage('Mutation Test') {
-//             steps {
-//                 script {
-//                     if(isUnix()) {
-//                         sh "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
-//                     } else {
-//                         bat "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
-//                     }
-//                 }
-//             }
-//         }
-
-        stage('Record Coverage Report') {
-            steps {
-                script {
-                    def reportName = "Coverage Report - Build #${env.BUILD_NUMBER}"
-                    // This gives visibility within Jenkins as to the state of the Coverage Reports
-                    // and allows analyzing Coverage Trends
-                    jacoco(
-                        execPattern: 'target/*.exec',
-                        classPattern: 'target/classes',
-                        sourcePattern: 'src/main/java',
-                        exclusionPattern: 'src/test*'
-                    )
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: 'target/site/jacoco',
-                        reportFiles: 'index.html',
-                        reportName: reportName
-                    ])
-                }
-            }
-        }
-
-        stage('Record Test Report') {
-            steps {
-                script {
-                    junit 'target/surefire-reports/*.xml'
+                stage('Mutation Tests') {
+                    stages {
+                        stage('Run') {
+                            steps {
+                                script {
+                                    if(isUnix()) {
+                                        sh "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+                                    } else {
+                                        bat "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+                                    }
+                                }
+                            }
+                        }
+                        stage('Record Reports') {
+                            steps {
+                                script {
+                                    def reportName = "Mutation Test Coverage Report - Build #${env.BUILD_NUMBER}"
+                                    publishHTML(target: [
+                                        allowMissing: false,
+                                        alwaysLinkToLastBuild: false,
+                                        keepAll: true,
+                                        reportDir: 'target/pit-reports',
+                                        reportFiles: 'index.html',
+                                        reportName: reportName
+                                    ])
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -117,6 +136,14 @@ pipeline {
                     }
                 }
             }
+        }
+
+        // For rollback purposes it is always valuable to keep the artifact of
+        // the built binary.
+        stage('Archive JAR Artifact') {
+             steps {
+                  archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
+             }
         }
 
         stage('Deploy') {
