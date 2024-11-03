@@ -120,7 +120,7 @@ pipeline {
                         aggregatingResults: false,
                         // This array will contain the tools we utilise for Static Analysis (e.g., Java Compiler, Checkstyle, ...)
                         // For more information regarding the tools natively available to the plugin: https://www.jenkins.io/doc/pipeline/steps/warnings-ng/
-                        tools: [java(), checkStyle()]
+                        tools: [checkStyle()]
                     )
                 }
             }
