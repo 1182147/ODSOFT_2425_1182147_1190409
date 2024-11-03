@@ -202,10 +202,10 @@
 				<version>1.17.0</version>
 				<configuration>
 					<targetClasses>
-						<param>pt.psoft.g1.psoftg1.*</param>
+						<param>**.model.**</param>
 					</targetClasses>
 					<targetTests>
-						<param>pt.psoft.g1.psoftg1.**</param>
+						<param>**.model.**</param>
 					</targetTests>
 				</configuration>
 			</plugin>
