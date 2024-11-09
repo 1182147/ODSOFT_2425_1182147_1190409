@@ -16,9 +16,9 @@ pipeline {
             steps {
                 script {
                     if(isUnix()) {
-                        sh "mvn clean compile"
+                        sh "mvn clean compile test-compile"
                     } else {
-                        bat "mvn clean compile"
+                        bat "mvn clean compile test-compile"
                     }
                 }
             }
@@ -46,9 +46,9 @@ pipeline {
                             steps {
                                 script {
                                     if(isUnix()) {
-                                        sh "mvn test"
+                                        sh "mvn org.jacoco:jacoco-maven-plugin:prepare-agent surefire:test org.jacoco:jacoco-maven-plugin:report"
                                     } else {
-                                        bat "mvn test"
+                                        bat "mvn org.jacoco:jacoco-maven-plugin:prepare-agent surefire:test org.jacoco:jacoco-maven-plugin:report"
                                     }
                                 }
                             }
@@ -85,9 +85,9 @@ pipeline {
                             steps {
                                 script {
                                     if(isUnix()) {
-                                        sh "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+                                        sh "mvn org.pitest:pitest-maven:mutationCoverage"
                                     } else {
-                                        bat "mvn test-compile org.pitest:pitest-maven:mutationCoverage"
+                                        bat "mvn org.pitest:pitest-maven:mutationCoverage"
                                     }
                                 }
                             }
@@ -130,9 +130,9 @@ pipeline {
             steps {
                 script {
                     if(isUnix()) {
-                        sh "mvn install -DskipTests"
+                        sh "mvn install -Dmaven.test.skip"
                     } else {
-                        bat "mvn install -DskipTests"
+                        bat "mvn install -Dmaven.test.skip"
                     }
                 }
             }
